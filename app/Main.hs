@@ -11,13 +11,13 @@ data Result = Win | Lose | Tie
 
 
 eval :: RPS -> RPS -> Result
-eval Rock Scissors  = Win
-eval Rock Paper     = Lose
-eval Scissors Rock  = Lose
-eval Scissors Paper = Win
-eval Paper Rock     = Win
-eval Paper Scissors = Lose
-eval _ _            = Tie
+eval Rock     Scissors = Win
+eval Rock     Paper    = Lose
+eval Scissors Rock     = Lose
+eval Scissors Paper    = Win
+eval Paper    Rock     = Win
+eval Paper    Scissors = Lose
+eval _        _        = Tie
 
 randRPS :: RandomGen g => Rand g RPS
 randRPS = do
@@ -45,15 +45,22 @@ results = sequence $ repeat randResult
 simulate :: Int -> IO ()
 simulate n = do
   ten <- evalRandIO $ take n `liftM` results
-  let count t = length $ filter (==t) ten
+  let count t = length $ filter (== t) ten
   let sur s = " (" ++ s ++ ")"
   let perc c = show ((fromIntegral c / fromIntegral n) * 100) ++ "%"
   let winCount  = count Win
   let loseCount = count Lose
   let tieCount  = count Tie
-  putStrLn $ "Wins: "   ++ show winCount  ++ sur (perc winCount)
+  putStrLn $ "Wins: " ++ show winCount ++ sur (perc winCount)
   putStrLn $ "Losses: " ++ show loseCount ++ sur (perc loseCount)
-  putStrLn $ "Ties: "   ++ show tieCount  ++ sur (perc tieCount)
+  putStrLn $ "Ties: " ++ show tieCount ++ sur (perc tieCount)
 
 main :: IO ()
-main = simulate 100000
+main = do
+  myRoll  <- readLine
+  cpuRoll <- evalRandIO randRPS
+  putStrLn $ show myRoll ++ " vs " ++ show cpuRoll
+  case myRoll `eval` cpuRoll of
+    Win  -> putStrLn "Yay we win!"
+    Lose -> putStrLn "I suck and lost :("
+    -- Tie  -> play
