@@ -20,7 +20,7 @@ eval Paper    Scissors = Lose
 eval _        _        = Tie
 
 randRPS :: RandomGen g => Rand g RPS
-randRPS = do
+randRPS = do 
   v <- getRandomR (1 :: Int, 3)
   return $ case v of
     1 -> Rock
@@ -54,6 +54,9 @@ simulate n = do
   putStrLn $ "Wins: " ++ show winCount ++ sur (perc winCount)
   putStrLn $ "Losses: " ++ show loseCount ++ sur (perc loseCount)
   putStrLn $ "Ties: " ++ show tieCount ++ sur (perc tieCount)
+
+-- main :: IO ()
+-- main = simulate 100000
 
 main :: IO ()
 main = do
